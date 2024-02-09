@@ -319,3 +319,15 @@ whereAmI(52.508, 13.381);
 whereAmI(19.037, 72.873);
 whereAmI(-33.933, 18.474);
 */
+
+//////////////* ASYNCHRONOUS BEHIND THE SCENES: THE EVENT LOOP
+/*
+Runtime in the Browser - "Container" which includes all the pieces necessary to execute Javascript code
+
+PARTS
+1. JS Engine - "Heart" of the runtime
+2. WEB APIs - APIs provided to the engine
+3. EVENT LOOP - sends callbacks from queue to call stack
+4. CALLBACK QUEUE - ready-to-be-executed callback functions (coming from events)
+
+*/
