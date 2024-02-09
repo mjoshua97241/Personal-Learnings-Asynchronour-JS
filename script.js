@@ -326,6 +326,8 @@ Runtime in the Browser - "Container" which includes all the pieces necessary to 
 
 PARTS
 1. JS Engine - "Heart" of the runtime
+  a. HEAP - where object are stored in memory
+  b. CALL STACK - where code is actually executed. Only ONE thread of execution. No multitasking!
 2. WEB APIs - APIs provided to the engine
 3. EVENT LOOP - sends callbacks from queue to call stack
 4. CALLBACK QUEUE - ready-to-be-executed callback functions (coming from events)
