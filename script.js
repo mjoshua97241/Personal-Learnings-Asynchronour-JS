@@ -333,3 +333,31 @@ PARTS
 4. CALLBACK QUEUE - ready-to-be-executed callback functions (coming from events)
 
 */
+
+//////////////* ASYNCHRONOUS BEHIND THE SCENES: THE EVENT LOOP IN PRACTICE
+
+/* 
+1. The first to run is anything top level code (outside the callbacks)
+2. Second is from  the microtasks queue (this should be resolve first before the callback queue)
+3. Then, from the callback queue (because of the timer)
+
+
+console.log('Test start');
+
+setTimeout(() => console.log('O sec timer'), 0);
+Promise.resolve('Resolved promise 1').then(res => console.log(res));
+console.log('Test end');
+*/
+/*
+console.log('Test start');
+
+setTimeout(() => console.log('O sec timer'), 0);
+Promise.resolve('Resolved promise 1').then(res => console.log(res));
+
+Promise.resolve('Resolved promise 2').then(res => {
+  for (let i = 0; i < 1000000000; i++) {}
+  console.log(res);
+});
+
+console.log('Test end');
+*/
