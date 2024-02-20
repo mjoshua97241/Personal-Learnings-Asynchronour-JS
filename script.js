@@ -422,7 +422,7 @@ wait(1)
 //   }, 1000);
 // }, 1000);
 
-// EASY FULFILLED AND REJECTE PROMISE
+/// EASY FULFILLED AND REJECT PROMISE
 
 Promise.resolve('abc').then(x => console.log(x));
 Promise.reject(new Error('Problem!')).catch(x => console.error(x));
@@ -483,7 +483,18 @@ Build the image loading functionality that I just showed you on the screen.
 Tasks are not super-descriptive this time, so that you can figure out some stuff on your own. Pretend you're working on your own 😉
 
 PART 1
-1. Create a function 'createImage' which receives imgPath as an input. This function returns a promise which creates a new image (use document.createElement('img')) and sets the .src attribute to the provided image path. When the image is done loading, append it to the DOM element with the 'images' class, and resolve the promise. The fulfilled value should be the image element itself. In case there is an error loading the image ('error' event), reject the promise.
+1. Create a function 'createImage' which receives imgPath as an input. This function returns a promise which creates a new image (use document.createElement('img')) and sets the .src attribute to the provided image path. // When the image is done loading, append it to the DOM element with the 'images' class, and resolve the promise. // The fulfilled value should be the image element itself. In case there is an error loading the image ('error' event), reject the promise.
+
+SOLUTION:
+ 
+  1. What is the function?
+    a. Pass the imgPath as an input.
+  2. How to return a promise that creates a new image and sets the .src attribute to the provided image path?
+    a. 
+  3. How to append the DOM element after the image done loading?
+  4. How to fulfill the value (iamge element)?
+  5. How to reject the promise if there is an error?
+
 
 If this part is too tricky for you, just watch the first part of the solution.
 
@@ -498,3 +509,47 @@ TEST DATA: Images in the img folder. Test the error handler by passing a wrong i
 
 GOOD LUCK 😀
 */
+
+// PART 1
+const imagesContainer = document.querySelector('.images');
+
+const createImage = function (imgPath) {
+  return new Promise(function (resolve, reject) {
+    // create a new image
+    const img = document.createElement('img');
+
+    // src attribute of the image element to the provided 'imgPath'
+    img.src = imgPath;
+
+    // Event listeners
+    // load
+    // Solution #1
+    // img.onload = () => {
+    //   imagesContainer.appendChild(img);
+    //   resolve(img);
+    // };
+
+    // Solution #2
+    img.addEventListener('load', function () {
+      imagesContainer.append(img);
+      resolve(img);
+    });
+
+    // Listen to error
+    // Solution #1
+    // img.onerror = () => {
+    //   reject(new Error('Failed to load image'));
+    // };
+
+    // Solution #2
+    img.addEventListener('error', function () {
+      reject(new Error('Image not found'));
+    });
+  });
+};
+
+// PART 2
+// Handle the successful promise
+createImage('img/img-1.jpg').then(img => {
+  console.log('Image 1 loaded');
+});
