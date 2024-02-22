@@ -511,6 +511,12 @@ GOOD LUCK 😀
 */
 
 // PART 1
+const wait = function (seconds) {
+  return new Promise(function (resolve) {
+    setTimeout(resolve, seconds * 1000);
+  });
+};
+
 const imagesContainer = document.querySelector('.images');
 
 const createImage = function (imgPath) {
@@ -550,6 +556,30 @@ const createImage = function (imgPath) {
 
 // PART 2
 // Handle the successful promise
-createImage('img/img-1.jpg').then(img => {
-  console.log('Image 1 loaded');
-});
+let currentImg;
+
+createImage('img/img-1.jpg')
+  .then(img => {
+    currentImg = img;
+    console.log('Image 1 loaded');
+    return wait(2);
+  })
+  .then(() => {
+    currentImg.style.display = 'none';
+    return createImage('img/img-2.jpg');
+  })
+  .then(img => {
+    currentImg = img;
+    console.log('Image 2 loaded');
+    return wait(2);
+  })
+  .then(() => {
+    currentImg.style.display = 'none';
+    return createImage('img/img-3.jpg');
+  })
+  .then(img => {
+    currentImg = img;
+    console.log('Image 3 loaded');
+    return wait(2);
+  })
+  .catch(err => console.error(err));
