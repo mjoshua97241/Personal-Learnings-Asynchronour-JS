@@ -426,7 +426,7 @@ wait(1)
 
 Promise.resolve('abc').then(x => console.log(x));
 Promise.reject(new Error('Problem!')).catch(x => console.error(x));
-*/
+
 
 // Promise based API
 const getPosition = function () {
@@ -508,7 +508,7 @@ PART 2
 TEST DATA: Images in the img folder. Test the error handler by passing a wrong image path. Set the network speed to 'Fast 3G' in the dev tools Network tab, otherwise images load too fast.
 
 GOOD LUCK 😀
-*/
+
 
 // PART 1
 const wait = function (seconds) {
@@ -583,3 +583,45 @@ createImage('img/img-1.jpg')
     return wait(2);
   })
   .catch(err => console.error(err));
+*/
+
+//////////* CONSUMING PROMISES WITH ASYNC/AWAIT
+//? This hides how really consuming promises works. It's syntatic(?) sugar that hides that true process
+
+const getPosition = function () {
+  return new Promise(function (resolve, reject) {
+    navigator.geolocation.getCurrentPosition(resolve, reject);
+  });
+};
+
+// OLD WAY
+// fetch(`https://restcountries.com/v2/name/${country}`).then(res =>
+//   console.log(res)
+// );
+
+const whereAmI = async function (country) {
+  // Geolocation
+  const pos = await getPosition();
+
+  const { latitude: lat, longitude: lng } = pos.coords;
+
+  // Reverse Geocoding
+  const resGeo = await fetch(
+    `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`
+  );
+  const dataGeo = await resGeo.json();
+  console.log(dataGeo);
+
+  // Country data
+
+  // Inside this functions, we can have one or more await functions
+  const res = await fetch(
+    `https://restcountries.com/v2/name/${dataGeo.countryName.toLowerCase()}`
+  );
+  const data = await res.json();
+  console.log(data);
+  renderCountry(data[0]);
+};
+
+whereAmI();
+console.log('FIRST');
