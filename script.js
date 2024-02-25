@@ -690,3 +690,59 @@ const get3Countries = async function (c1, c2, c3) {
 };
 
 get3Countries('portugal', 'canada', 'tanzania');
+
+////////////////* PROMISE COMBINATOR
+///? Promise.race
+// Receives an array of promises and returns a promise. This promise returned by promise.race is settled as soon as one the input promises settles. Settled means available (it doesn't matter if it is rejected or fulfilled).
+// The promise that settles WINS the race. ONE RESULT only
+// If one of the promise gets rejected, it WINS the race. Means all the promises shortcircuits
+// SITUATION: Helpful when the user has a very bad internet connection, then the fetch request might took to long. Rejects the promises after a number of seconds has passed.
+(async function () {
+  const res = await Promise.race([
+    getJSON(`https://restcountries.com/v2/name/italy`),
+    getJSON(`https://restcountries.com/v2/name/egypt`),
+    getJSON(`https://restcountries.com/v2/name/mexico`),
+  ]);
+  console.log(res[0]);
+})();
+
+const timeout = function (sec) {
+  return new Promise(function (_, reject) {
+    setTimeout(function () {
+      reject(new Error('Request took too long!'));
+    }, sec * 1000);
+  });
+};
+
+Promise.race([
+  getJSON(`https://restcountries.com/v2/name/tanzania`, timeout(5)),
+])
+  .then(res => console.log(res[0]))
+  .catch(err => console.error(err));
+
+///? Promise.allSettled
+// Takes in array of promises, simply return an array of all the settled promises. No matter the promises got rejected or not.
+// It is similar with promise.all but the difference is if the promise.all will rejected, will shortcircuits all the promises, even it is settled.
+Promise.allSettled([
+  Promise.resolve('Success'),
+  Promise.reject('ERROR'),
+  Promise.resolve('Another Success'),
+]).then(res => console.log(res));
+
+Promise.all([
+  Promise.resolve('Success'),
+  Promise.reject('ERROR'),
+  Promise.resolve('Another Success'),
+])
+  .then(res => console.log(res))
+  .catch(err => console.error(err));
+
+///? Promise.any [ES2021]
+//Takes in array of multiple promises, it will return the FIRST FULFILLED PROMISES and simply IGNORED REJECTED promises
+Promise.any([
+  Promise.resolve('Success'),
+  Promise.reject('ERROR'),
+  Promise.resolve('Another Success'),
+])
+  .then(res => console.log(res))
+  .catch(err => console.error(err));
