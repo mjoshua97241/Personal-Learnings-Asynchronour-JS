@@ -113,7 +113,7 @@ console.log(request);
 
 //////* CONSUMING PROMISES
 // Simplified version
-
+*/
 const getJSON = function (url, errorMsg = 'Something went wrong') {
   return fetch(url).then(response => {
     if (!response.ok) throw new Error(`${errorMsg} (${response.status})`);
@@ -121,7 +121,7 @@ const getJSON = function (url, errorMsg = 'Something went wrong') {
     return response.json();
   });
 };
-
+/*
 const getCountryData = function (country) {
   fetch(`https://restcountries.com/v2/name/${country}`)
     .then(response => {
@@ -633,19 +633,27 @@ const whereAmI = async function (country) {
   }
 };
 
-console.log('1: Will get location');
 // const city = whereAmI();
 // console.log(city);
 
 // Mixing the old and new consuming promises (DON'T LIKE)
 // Prefer use ASYNC FUNCTIONS
-whereAmI()
-  .then(city => console.log(`2: ${city}`))
-  .catch(err => console.error(`2: ${err.message} 💥`))
-  .finally(() => console.log('3: Finished getting location'));
+// whereAmI()
+//   .then(city => console.log(`2: ${city}`))
+//   .catch(err => console.error(`2: ${err.message} 💥`))
+//   .finally(() => console.log('3: Finished getting location'));
 
 // CONVERT THE whereAmI() to async function
-(async function () {});
+/*
+(async function () {
+  try {
+    const city = await whereAmI();
+    console.log(`2: ${city}`);
+  } catch (err) {
+    console.error(`2: ${err.message} 💥`);
+  }
+  console.log('3: Finished getting location');
+})();
 
 // try {
 //   let y = 1;
@@ -654,3 +662,31 @@ whereAmI()
 // } catch (err) {
 //   alert(err.message);
 // }
+*/
+
+// RUNNING PROMISES IN PARALLEL
+const get3Countries = async function (c1, c2, c3) {
+  //always use this try catch block when using an async function
+  try {
+    // const [data1] = await getJSON(`https://restcountries.com/v2/name/${c1}`);
+    // const [data2] = await getJSON(`https://restcountries.com/v2/name/${c2}`);
+    // const [data3] = await getJSON(`https://restcountries.com/v2/name/${c3}`);
+    // console.log([data1.capital, data2.capital, data3.capital]);
+
+    // Run the promises in PARALLEL
+    const data = await Promise.all([
+      getJSON(`https://restcountries.com/v2/name/${c1}`),
+      getJSON(`https://restcountries.com/v2/name/${c2}`),
+      getJSON(`https://restcountries.com/v2/name/${c3}`),
+    ]);
+
+    ///?NOTE: If one of the promises rejects, it will shortcircuit all the promises
+
+    // Loop
+    console.log(data.map(d => d[0].capital));
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+get3Countries('portugal', 'canada', 'tanzania');
