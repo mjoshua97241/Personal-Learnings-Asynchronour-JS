@@ -664,7 +664,8 @@ const whereAmI = async function (country) {
 // }
 */
 
-// RUNNING PROMISES IN PARALLEL
+//////* RUNNING PROMISES IN PARALLEL
+/*
 const get3Countries = async function (c1, c2, c3) {
   //always use this try catch block when using an async function
   try {
@@ -690,13 +691,14 @@ const get3Countries = async function (c1, c2, c3) {
 };
 
 get3Countries('portugal', 'canada', 'tanzania');
-
+*/
 ////////////////* PROMISE COMBINATOR
 ///? Promise.race
 // Receives an array of promises and returns a promise. This promise returned by promise.race is settled as soon as one the input promises settles. Settled means available (it doesn't matter if it is rejected or fulfilled).
 // The promise that settles WINS the race. ONE RESULT only
 // If one of the promise gets rejected, it WINS the race. Means all the promises shortcircuits
 // SITUATION: Helpful when the user has a very bad internet connection, then the fetch request might took to long. Rejects the promises after a number of seconds has passed.
+/*
 (async function () {
   const res = await Promise.race([
     getJSON(`https://restcountries.com/v2/name/italy`),
@@ -747,6 +749,7 @@ Promise.any([
   .then(res => console.log(res))
   .catch(err => console.error(err));
 
+*/
 ///////////////////////////////////////
 // Coding Challenge #3
 
@@ -861,27 +864,76 @@ const createImage = function (imgPath) {
 
 let currentImg;
 
+/*
+/// MY SOLUTION
 const loadNPause = async function () {
   try {
-    const load1 = await createImage('img/img-1.jpg');
-    currentImg = load1;
-    console.log('Image 1 loaded');
-    const pause1 = await wait(2);
+    let img1 = await createImage('img/img-1.jpg');
+    console.log('Image 1 image');
+    await wait(2);
+    img.style.display = 'none';
 
-    currentImg.style.display = 'none';
-    const load2 = await createImage('img/img-2.jpg');
+    img = await createImage('img/img-2.jpg');
+    console.log('Image 2 image');
+    await wait(2);
+    img.style.display = 'none';
 
-    currentImg = load2;
-    console.log('Image 2 loaded');
-    const pause2 = await wait(2);
-
-    currentImg.style.display = 'none';
-    const load3 = await createImage('img/img-3.jpg');
-
-    currentImg = load3;
-    console.log('Image 3 loaded');
-    const pause3 = await wait(2);
+    img = await createImage('img/img-3.jpg');
+    currentImg = img3;
+    console.log('Image 3 image');
+    await wait(2);
   } catch (err) {
     console.error(err);
   }
 };
+*/
+
+/// MY SOLUTION with ChatGPT help
+/*
+const loadNPause = async function (path, duration) {
+  try {
+    const img = await createImage(path);
+    currentImg = img;
+    console.log(`Image ${path.match(/\d+/g)} loaded`);
+    await wait(duration);
+    currentImg.style.display = 'none';
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+(async function () {
+  try {
+    await loadNPause('img/img-1.jpg', 2);
+    await loadNPause('img/img-2.jpg', 2);
+    await loadNPause('img/img-3.jpg', 2);
+  } catch (err) {
+    console.error(err);
+  }
+})();
+*/
+// PART 2
+
+//1. loadAll = async promise.all(imgArr)
+// 2. const loop = await imgArr.map() await createImage([loop])
+//3. Check the images array
+//4. What promise combinator function should I use to get the images from the array?
+//5. promise.parallel
+
+const loadAll = async function (imgArr) {
+  try {
+    const imgs = imgArr.map(async img => await createImage(img));
+    console.log(imgs);
+
+    const all = await Promise.all(imgs);
+    console.log(all);
+
+    all.forEach(img => {
+      img.classList.add('parallel');
+    });
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+loadAll(['img/img-1.jpg', 'img/img-2.jpg', 'img/img-3.jpg']);
